@@ -93,3 +93,24 @@ def evaluate_accuracy(data_iterator, net):
         denominator += data.shape[0]
     # Returning the accuracy of the net, or the probability of getting label right using our net.
     return (numerator / denominator).asscalar()
+
+epochs = 10
+learning_rate = .001
+
+for e in range(epochs):
+    cumulative_loss = 0
+    for i, (data, label) in enumerate(train_data):
+        data = data.as_in_context(model_ctx).reshape((-1,784))
+        label = label.as_in_context(model_ctx)
+        label_one_hot = nd.one_hot(label, 10)
+        with autograd.record():
+            output = net(data)
+            loss = cross_entropy(output, label_one_hot)
+        loss.backward()
+        SGD(params, learning_rate)
+        cumulative_loss += nd.sum(loss).asscalar()
+
+
+    test_accuracy = evaluate_accuracy(test_data, net)
+    train_accuracy = evaluate_accuracy(train_data, net)
+    print("Epoch %s. Loss: %s, Train_acc %s, Test_acc %s" % (e, cumulative_loss/num_examples, train_accuracy, test_accuracy))
