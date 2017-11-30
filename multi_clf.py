@@ -15,14 +15,32 @@ mnist_test = gluon.data.vision.MNIST(train=False, transform=transform)
 
 # Proof that the image is now a 3-tuple. The label is the actual number in the image.
 image, label = mnist_train[0]
-print(image.shape, label)
+# print(image.shape, label)
 
 # matplotlib expects either (height, width) or (height, width, channel) where channel has RGB values.
 # Hence we broadcast single channel to three.
 # Print the shape to get a clearer idea.
 im = mx.nd.tile(image, (1,1,3))
-print(im.shape)
+# print(im.shape)
 
 # You will see a clear five when you implement plt.show().
-plt.imshow(im.asnumpy())
-plt.show()
+# plt.imshow(im.asnumpy())
+# plt.show()
+
+# Defining some basic values.
+num_inputs = 784
+num_outputs = 10
+num_examples = 60000
+
+batch_size = 64
+# Loading the data iterator
+train_data = mx.gluon.data.DataLoader(mnist_train, batch_size, shuffle=True)
+test_data = mx.gluon.data.DataLoader(mnist_test, batch_size, shuffle=False)
+
+# Allocating model parameters
+W = nd.random_normal(shape=(num_inputs, num_outputs),ctx=model_ctx)
+b = nd.random_normal(shape=num_outputs,ctx=model_ctx)
+# Attaching gradient to all the parameters
+params = [W, b]
+for param in params:
+    param.attach_grad()
