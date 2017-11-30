@@ -64,3 +64,13 @@ def net(X):
     y_linear = nd.dot(X, W) + b
     yhat = softmax(y_linear)
     return yhat
+
+# Our loss function. 
+# This only cares about the prediction made by our net for the correct label, none of the others.
+def cross_entropy(yhat, y):
+    return - nd.sum(y * nd.log(yhat), axis=0, exclude=True)
+
+# The Stochastic Gradient Descent optimiser for our net.
+def SGD(params, lr):
+    for param in params:
+        param[:] = param - lr * param.grad
