@@ -44,3 +44,12 @@ b = nd.random_normal(shape=num_outputs,ctx=model_ctx)
 params = [W, b]
 for param in params:
     param.attach_grad()
+
+# Defining the softmax
+def softmax(y_linear):
+    # exponent of a negative value is always between 0 and 1. 
+    exp = nd.exp(y_linear-nd.max(y_linear))
+    # Finding the total sum of all the exponents 
+    norms = nd.sum(exp, axis=0, exclude=True).reshape((-1,1))
+    # Retrning value of exponent by total sum such that all of them overall sum up to 1.
+    return exp / norms
