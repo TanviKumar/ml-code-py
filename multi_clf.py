@@ -53,3 +53,14 @@ def softmax(y_linear):
     norms = nd.sum(exp, axis=0, exclude=True).reshape((-1,1))
     # Retrning value of exponent by total sum such that all of them overall sum up to 1.
     return exp / norms
+
+# Just to get an idea about what softmax function is doing to a bunch of random values.    
+# sample_y_linear = nd.random_normal(shape=(2,10))
+# sample_yhat = softmax(sample_y_linear)
+# print(sample_yhat)
+
+# Defining our model or neural network
+def net(X):
+    y_linear = nd.dot(X, W) + b
+    yhat = softmax(y_linear)
+    return yhat
