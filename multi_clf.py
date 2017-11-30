@@ -74,3 +74,22 @@ def cross_entropy(yhat, y):
 def SGD(params, lr):
     for param in params:
         param[:] = param - lr * param.grad
+
+# Evaluating accuracy, i.e, number of times our net gets the right answer over the total number of tries.
+def evaluate_accuracy(data_iterator, net):
+    numerator = 0.
+    denominator = 0.
+    for i, (data, label) in enumerate(data_iterator):
+        data = data.as_in_context(model_ctx).reshape((-1,784))
+        label = label.as_in_context(model_ctx)
+        label_one_hot = nd.one_hot(label, 10)
+        # The values given by our net stored in output
+        output = net(data)
+        # The prediction will naturally be the one which has the maximum value in output.
+        predictions = nd.argmax(output, axis=1)
+        # Count only those which match the true label for numerator
+        numerator += nd.sum(predictions == label)
+        # Total number of checks
+        denominator += data.shape[0]
+    # Returning the accuracy of the net, or the probability of getting label right using our net.
+    return (numerator / denominator).asscalar()
