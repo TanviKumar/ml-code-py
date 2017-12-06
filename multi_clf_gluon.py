@@ -34,3 +34,17 @@ net.collect_params().initialize(mx.init.Normal(sigma=1.), ctx=model_ctx)
 
 # Optimiser usung gluon.
 trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': 0.1})
+
+# Evalution metric. Returns the accuracy.
+def evaluate_accuracy(data_iterator, net):
+	#Accuracy using metric package
+    acc = mx.metric.Accuracy()
+    for i, (data, label) in enumerate(data_iterator):
+        data = data.as_in_context(model_ctx).reshape((-1,784))
+        label = label.as_in_context(model_ctx)
+        # The values given by our net stored in output
+        output = net(data)
+        # The prediction will naturally be the one which has the maximum value in output
+        predictions = nd.argmax(output, axis=1)
+        acc.update(preds=predictions, labels=label)
+    return acc.get()[1]
