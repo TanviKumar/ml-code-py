@@ -27,3 +27,7 @@ test_data = mx.gluon.data.DataLoader(mnist_test, batch_size, shuffle=False)
 
 # Defining the neural net. Here it is dense as each node in one layer in connected to all in the other.
 net = gluon.nn.Dense(num_outputs)
+
+# Parameter initialisation
+# The parameters get initialised during the first call to the forward method.
+net.collect_params().initialize(mx.init.Normal(sigma=1.), ctx=model_ctx)
