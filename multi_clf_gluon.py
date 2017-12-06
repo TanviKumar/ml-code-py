@@ -51,3 +51,22 @@ def evaluate_accuracy(data_iterator, net):
 
 # Loss function.
 softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
+
+epochs = 10
+
+# Usual training loop.
+for e in range(epochs):
+    cumulative_loss = 0
+    for i, (data, label) in enumerate(train_data):
+        data = data.as_in_context(model_ctx).reshape((-1,784))
+        label = label.as_in_context(model_ctx)
+        with autograd.record():
+            output = net(data)
+            loss = softmax_cross_entropy(output, label)
+        loss.backward()
+        trainer.step(batch_size)
+        cumulative_loss += nd.sum(loss).asscalar()
+
+    test_accuracy = evaluate_accuracy(test_data, net)
+    train_accuracy = evaluate_accuracy(train_data, net)
+    print("Epoch %s. Loss: %s, Train_acc %s, Test_acc %s" % (e, cumulative_loss/num_examples, train_accuracy, test_accuracy))
