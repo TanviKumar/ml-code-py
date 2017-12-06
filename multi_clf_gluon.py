@@ -31,3 +31,6 @@ net = gluon.nn.Dense(num_outputs)
 # Parameter initialisation
 # The parameters get initialised during the first call to the forward method.
 net.collect_params().initialize(mx.init.Normal(sigma=1.), ctx=model_ctx)
+
+# Optimiser usung gluon.
+trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': 0.1})
