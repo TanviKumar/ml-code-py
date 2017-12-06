@@ -48,3 +48,6 @@ def evaluate_accuracy(data_iterator, net):
         predictions = nd.argmax(output, axis=1)
         acc.update(preds=predictions, labels=label)
     return acc.get()[1]
+
+# Loss function.
+softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
