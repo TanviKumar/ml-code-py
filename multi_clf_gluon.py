@@ -1,3 +1,5 @@
+# Using MNIST
+
 import mxnet as mx
 from mxnet import nd, autograd, gluon
 import matplotlib.pyplot as plt
@@ -22,3 +24,6 @@ batch_size = 64
 # Loading the data iterator
 train_data = mx.gluon.data.DataLoader(mnist_train, batch_size, shuffle=True)
 test_data = mx.gluon.data.DataLoader(mnist_test, batch_size, shuffle=False)
+
+# Defining the neural net. Here it is dense as each node in one layer in connected to all in the other.
+net = gluon.nn.Dense(num_outputs)
