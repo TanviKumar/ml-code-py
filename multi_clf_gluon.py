@@ -91,4 +91,5 @@ for i, (data, label) in enumerate(sample_data):
     plt.show()
     pred=model_predict(net,data.reshape((-1,784)))
     print('model predictions are:', pred)
+    print('true labels :', label)
     break

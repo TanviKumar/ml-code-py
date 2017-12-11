@@ -78,7 +78,7 @@ def SGD(params, lr):
 # Evaluating accuracy, i.e, number of times our net gets the right answer over the total number of tries.
 def evaluate_accuracy(data_iterator, net):
     numerator = 0.
-    denominator = 0.
+    denominator = 0. 
     for i, (data, label) in enumerate(data_iterator):
         data = data.as_in_context(model_ctx).reshape((-1,784))
         label = label.as_in_context(model_ctx)
@@ -133,4 +133,5 @@ for i, (data, label) in enumerate(sample_data):
     plt.show()
     pred=model_predict(net,data.reshape((-1,784)))
     print('model predictions are:', pred)
+    print('true labels :', label)
     break
