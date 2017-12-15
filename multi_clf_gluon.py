@@ -76,15 +76,17 @@ def model_predict(net,data):
     output = net(data.as_in_context(model_ctx))
     return nd.argmax(output, axis=1)
 
+samples = 10
+
 # let's sample 10 random data points from the test set
 sample_data = mx.gluon.data.DataLoader(mx.gluon.data.vision.MNIST(train=False, transform=transform),
-                              10, shuffle=True)
+                              samples, shuffle=True)
 # Visualisation of the testing
 for i, (data, label) in enumerate(sample_data):
     data = data.as_in_context(model_ctx)
-    print(data.shape)
+    # print(data.shape)
     im = nd.transpose(data,(1,0,2,3))
-    im = nd.reshape(im,(28,10*28,1))
+    im = nd.reshape(im,(28,samples*28,1))
     imtiles = nd.tile(im, (1,1,3))
 
     plt.imshow(imtiles.asnumpy())
