@@ -66,3 +66,26 @@ for e in range(epochs):
     train_accuracy = evaluate_accuracy(train_data, net)
     print("Epoch %s. Loss: %s, Train_acc %s, Test_acc %s" %
           (e, cumulative_loss/num_examples, train_accuracy, test_accuracy))
+
+# The predictor. Returns prediction when we use our net.
+def model_predict(net,data):
+    output = net(data)
+    return nd.argmax(output, axis=1)
+
+samples = 10
+
+# Sampling 10 random data points from the test set
+sample_data = mx.gluon.data.DataLoader(mx.gluon.data.vision.MNIST(train=False, transform=transform), samples, shuffle=True)
+for i, (data, label) in enumerate(sample_data):
+    data = data.as_in_context(model_ctx)
+    # print(data.shape)
+    im = nd.transpose(data,(1,0,2,3))
+    im = nd.reshape(im,(28,samples*28,1))
+    imtiles = nd.tile(im, (1,1,3))
+    # Seeing the predictions after the training is done
+    plt.imshow(imtiles.asnumpy())
+    plt.show()
+    pred=model_predict(net,data.reshape((-1,784)))
+    print('model predictions are:', pred)
+    print('true labels :', label)
+    break

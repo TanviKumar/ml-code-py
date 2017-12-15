@@ -137,7 +137,7 @@ samples = 10
 sample_data = mx.gluon.data.DataLoader(mx.gluon.data.vision.MNIST(train=False, transform=transform), samples, shuffle=True)
 for i, (data, label) in enumerate(sample_data):
     data = data.as_in_context(model_ctx)
-    print(data.shape)
+    # print(data.shape)
     im = nd.transpose(data,(1,0,2,3))
     im = nd.reshape(im,(28,samples*28,1))
     imtiles = nd.tile(im, (1,1,3))

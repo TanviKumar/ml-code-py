@@ -131,7 +131,7 @@ for e in range(epochs):
     for i, (data,label) in enumerate(train_data):
         data = data.as_in_context(model_ctx).reshape((-1, 16))
         label = label.as_in_context(model_ctx)
-        label_one_hot = nd.one_hot(label, 26)
+        label_one_hot = nd.one_hot(label, num_outputs)
         with autograd.record():
             output = net(data)
             loss = cross_entropy(output, label_one_hot)
@@ -161,7 +161,7 @@ for i, (data, label) in enumerate(sample_data):
     # Converting labels and predictions from numbers to characters to see true results
     pred = pred.asnumpy()
     label = label.asnumpy()
-    for j in range(10):
+    for j in range(samples):
     	trueLabel.append(chr(int(label[j]) + 65))
     	truePred.append(chr(int(pred[j]) + 65))
     print('Model predictions are:', truePred)

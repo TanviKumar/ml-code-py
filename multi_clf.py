@@ -102,7 +102,7 @@ for e in range(epochs):
     for i, (data, label) in enumerate(train_data):
         data = data.as_in_context(model_ctx).reshape((-1,784))
         label = label.as_in_context(model_ctx)
-        label_one_hot = nd.one_hot(label, 10)
+        label_one_hot = nd.one_hot(label, num_outputs)
         with autograd.record():
             output = net(data)
             loss = cross_entropy(output, label_one_hot)
@@ -120,13 +120,14 @@ def model_predict(net,data):
     output = net(data)
     return nd.argmax(output, axis=1)
 
+samples = 10
 # Sampling 10 random data points from the test set
-sample_data = mx.gluon.data.DataLoader(mnist_test, 10, shuffle=True)
+sample_data = mx.gluon.data.DataLoader(mnist_test, samples, shuffle=True)
 for i, (data, label) in enumerate(sample_data):
     data = data.as_in_context(model_ctx)
     print(data.shape)
     im = nd.transpose(data,(1,0,2,3))
-    im = nd.reshape(im,(28,10*28,1))
+    im = nd.reshape(im,(28,samples*28,1))
     imtiles = nd.tile(im, (1,1,3))
     # Seeing the predictions after the training is done
     plt.imshow(imtiles.asnumpy())
