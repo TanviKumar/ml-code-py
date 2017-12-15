@@ -8,32 +8,38 @@ import pandas as pd
 data_ctx = mx.cpu()
 model_ctx = mx.cpu()
 
-# Based on data and concepts from UCI Letter Recognition Data Set 
+# Based on data and concepts from UCI Letter Recognition Data Set
 letters = pd.read_csv('data/letter-recognition.txt')
 
+# Taking first 15000 as training data and separating labels from corresponding data
 training_points = np.array(letters[:15000].drop(['letter'], 1))
 training_labels = np.array(letters[:15000]['letter'])
+# Converting labels to float for easy operations
 for i in range(training_labels.size):
 	training_labels[i] = np.float32(ord(training_labels[i]) - 65)
- 
+
+# Taking final 5000 as testing data and separating labels from corresponding data
 test_points = np.array(letters[15000:].drop(['letter'], 1))
 test_labels = np.array(letters[15000:]['letter'])
+# Converting labels to float for easy operations
 for i in range(test_labels.size):
 	test_labels[i] = np.float32(ord(test_labels[i]) - 65)
 
+# Init basics
 num_inputs = 16
 num_outputs = 26
 batch_size = 40
 num_examples = 20000
 
+# Converting numpy arrays to mxnet NDArray.
 training_points = nd.array(training_points)
 test_points = nd.array(test_points)
 
+# Creating dataset by zipping data and labels into tuples
 trainer = zip(training_points, training_labels)
 tester = zip(test_points, test_labels)
 
-print(trainer[0])
-
+# Init the dataloaders for training and testing data
 train_data = gluon.data.DataLoader(trainer, batch_size, shuffle=True)
 test_data = gluon.data.DataLoader(tester, batch_size, shuffle=False) 
 
@@ -137,4 +143,27 @@ for e in range(epochs):
     test_accuracy = evaluate_accuracy(test_data, net)
     train_accuracy = evaluate_accuracy(train_data, net)
     print("Epoch %s. Loss: %s, Train_acc %s, Test_acc %s" %
-          (e, cumulative_loss/num_examples, train_accuracy, test_accuracy))	
+          (e, cumulative_loss/num_examples, train_accuracy, test_accuracy))
+
+# The predictor. Returns prediction when we use our net.
+def model_predict(net,data):
+    output = net(data)
+    return nd.argmax(output, axis=1)
+
+samples = 10
+truePred = []
+trueLabel = []
+# Sampling 10 random data points from the test set
+sample_data = mx.gluon.data.DataLoader(tester, samples, shuffle=True)
+for i, (data, label) in enumerate(sample_data):
+    data = data.as_in_context(model_ctx)
+    pred = model_predict(net,data)
+    # Converting labels and predictions from numbers to characters to see true results
+    pred = pred.asnumpy()
+    label = label.asnumpy()
+    for j in range(10):
+    	trueLabel.append(chr(int(label[j]) + 65))
+    	truePred.append(chr(int(pred[j]) + 65))
+    print('Model predictions are:', truePred)
+    print('The true labels are :', trueLabel)
+    break
