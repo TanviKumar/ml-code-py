@@ -31,3 +31,6 @@ with net.name_scope():
     net.add(gluon.nn.Flatten())
     net.add(gluon.nn.Dense(num_fc, activation="relu"))
     net.add(gluon.nn.Dense(num_outputs))
+
+# Init Parameters
+net.collect_params().initialize(mx.init.Xavier(magnitude=2.24), ctx=ctx)
