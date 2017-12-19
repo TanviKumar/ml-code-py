@@ -66,3 +66,44 @@ def softmax(y_linear):
 # Returns softmax cross entropy loss.
 def softmax_cross_entropy(yhat_linear, y):
     return - nd.nansum(y * nd.log_softmax(yhat_linear), axis=0, exclude=True)                                  
+
+# Defining the CNN.
+def net(X, debug=False):
+    #  Define the computation of the first convolutional layer
+    h1_conv = nd.Convolution(data=X, weight=W1, bias=b1, kernel=(3,3), num_filter=num_filter_conv_layer1)
+    h1_activation = relu(h1_conv)
+    h1 = nd.Pooling(data=h1_activation, pool_type="avg", kernel=(2,2), stride=(2,2))
+    if debug:
+        print("h1 shape: %s" % (np.array(h1.shape)))
+
+    #  Define the computation of the second convolutional layer
+    h2_conv = nd.Convolution(data=h1, weight=W2, bias=b2, kernel=(5,5), num_filter=num_filter_conv_layer2)
+    h2_activation = relu(h2_conv)
+    h2 = nd.Pooling(data=h2_activation, pool_type="avg", kernel=(2,2), stride=(2,2))
+    if debug:
+        print("h2 shape: %s" % (np.array(h2.shape)))
+
+    #  Flattening h2 so that we can feed it into a fully-connected layer
+    h2 = nd.flatten(h2)
+    # Adjust shape of W3 based on the shape of h2 after flattening
+    if debug:
+        print("Flat h2 shape: %s" % (np.array(h2.shape)))
+
+    #  Define the computation of the third (fully-connected) layer
+    h3_linear = nd.dot(h2, W3) + b3
+    h3 = relu(h3_linear)
+    if debug:
+        print("h3 shape: %s" % (np.array(h3.shape)))
+
+    #  Define the computation of the output layer
+    yhat_linear = nd.dot(h3, W4) + b4
+    if debug:
+        print("yhat_linear shape: %s" % (np.array(yhat_linear.shape)))
+
+    return yhat_linear
+
+# For debugging because shapes are confusing
+for i, (data, label) in enumerate(train_data):
+    data = data.as_in_context(ctx)
+    output = net(data, debug=True)
+    break
