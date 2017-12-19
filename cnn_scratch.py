@@ -103,7 +103,12 @@ def net(X, debug=False):
     return yhat_linear
 
 # For debugging because shapes are confusing
-for i, (data, label) in enumerate(train_data):
-    data = data.as_in_context(ctx)
-    output = net(data, debug=True)
-    break
+# for i, (data, label) in enumerate(train_data):
+#     data = data.as_in_context(ctx)
+#     output = net(data, debug=True)
+#     break
+
+# Function for SGD for parameters
+def SGD(params, lr):
+    for param in params:
+        param[:] = param - lr * param.grad
