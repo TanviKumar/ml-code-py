@@ -112,3 +112,17 @@ def net(X, debug=False):
 def SGD(params, lr):
     for param in params:
         param[:] = param - lr * param.grad
+
+# Function to return accuracy
+def evaluate_accuracy(data_iterator, net):
+    numerator = 0.
+    denominator = 0.
+    for i, (data, label) in enumerate(data_iterator):
+        data = data.as_in_context(ctx)
+        label = label.as_in_context(ctx)
+        label_one_hot = nd.one_hot(label, 10)
+        output = net(data)
+        predictions = nd.argmax(output, axis=1)
+        numerator += nd.sum(predictions == label)
+        denominator += data.shape[0]
+    return (numerator / denominator).asscalar()
