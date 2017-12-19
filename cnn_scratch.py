@@ -55,4 +55,10 @@ for param in params:
 
 # Usual Rectified Linear Unit function
 def relu(X):
-    return nd.maximum(X,nd.zeros_like(X))                                  
+    return nd.maximum(X,nd.zeros_like(X))
+
+# Returns softmax
+def softmax(y_linear):
+    exp = nd.exp(y_linear-nd.max(y_linear))
+    partition = nd.sum(exp, axis=0, exclude=True).reshape((-1,1))
+    return exp / partition                                  
