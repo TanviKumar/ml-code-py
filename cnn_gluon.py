@@ -37,3 +37,6 @@ net.collect_params().initialize(mx.init.Xavier(magnitude=2.24), ctx=ctx)
 
 # Loss function
 softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
+
+# SGD for parameters
+trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': .1})
