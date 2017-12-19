@@ -44,11 +44,15 @@ for param in params:
     param.attach_grad()
     
 ###### See how the convolution and pooling changes the shape.
-for data, _ in train_data:
-    data = data.as_in_context(ctx)
-    break
-conv = nd.Convolution(data=data, weight=W1, bias=b1, kernel=(3,3), num_filter=20)
-print(conv.shape)
+# for data, _ in train_data:
+#     data = data.as_in_context(ctx)
+#     break
+# conv = nd.Convolution(data=data, weight=W1, bias=b1, kernel=(3,3), num_filter=20)
+# print(conv.shape)
 
-pool = nd.Pooling(data=conv, pool_type="max", kernel=(2,2), stride=(2,2))
-print(pool.shape)                                   
+# pool = nd.Pooling(data=conv, pool_type="max", kernel=(2,2), stride=(2,2))
+# print(pool.shape) 
+
+# Usual Rectified Linear Unit function
+def relu(X):
+    return nd.maximum(X,nd.zeros_like(X))                                  
