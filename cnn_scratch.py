@@ -61,4 +61,8 @@ def relu(X):
 def softmax(y_linear):
     exp = nd.exp(y_linear-nd.max(y_linear))
     partition = nd.sum(exp, axis=0, exclude=True).reshape((-1,1))
-    return exp / partition                                  
+    return exp / partition
+
+# Returns softmax cross entropy loss.
+def softmax_cross_entropy(yhat_linear, y):
+    return - nd.nansum(y * nd.log_softmax(yhat_linear), axis=0, exclude=True)                                  
