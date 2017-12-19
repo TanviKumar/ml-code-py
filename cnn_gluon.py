@@ -34,3 +34,6 @@ with net.name_scope():
 
 # Init Parameters
 net.collect_params().initialize(mx.init.Xavier(magnitude=2.24), ctx=ctx)
+
+# Loss function
+softmax_cross_entropy = gluon.loss.SoftmaxCrossEntropyLoss()
