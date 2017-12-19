@@ -126,3 +126,29 @@ def evaluate_accuracy(data_iterator, net):
         numerator += nd.sum(predictions == label)
         denominator += data.shape[0]
     return (numerator / denominator).asscalar()
+
+# Defining some variables for training the model
+epochs = 5
+learning_rate = .01
+smoothing_constant = .01
+
+# Traning loop
+for e in range(epochs):
+    for i, (data, label) in enumerate(train_data):
+        data = data.as_in_context(ctx)
+        label = label.as_in_context(ctx)
+        label_one_hot = nd.one_hot(label, num_outputs)
+        with autograd.record():
+            output = net(data)
+            loss = softmax_cross_entropy(output, label_one_hot)
+        loss.backward()
+        SGD(params, learning_rate)
+        # Keeping moving average fo the loss
+        curr_loss = nd.mean(loss).asscalar()
+        moving_loss = (curr_loss if ((i == 0) and (e == 0))
+                       else (1 - smoothing_constant) * moving_loss + (smoothing_constant) * curr_loss)
+
+
+    test_accuracy = evaluate_accuracy(test_data, net)
+    train_accuracy = evaluate_accuracy(train_data, net)
+    print("Epoch %s. Loss: %s, Train_acc %s, Test_acc %s" % (e, moving_loss, train_accuracy, test_accuracy))
